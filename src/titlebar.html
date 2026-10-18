@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; webview-src https://fleep.space"
+    >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fleep</title>
+    <link rel="stylesheet" href="titlebar.css">
+  </head>
+  <body>
+    <header class="titlebar">
+      <div class="drag-region" aria-hidden="true"></div>
+      <div class="brand" aria-label="Fleep">
+        <img class="wordmark" src="../assets/wordmark.svg" alt="Fleep">
+      </div>
+
+      <div class="window-controls" aria-label="Window controls">
+        <button class="control-button" id="minimize" type="button" aria-label="Minimize" title="Minimize">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 6h9"/></svg>
+        </button>
+        <button class="control-button" id="maximize" type="button" aria-label="Maximize" title="Maximize">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1.75" y="1.75" width="8.5" height="8.5"/></svg>
+        </button>
+        <button class="control-button close" id="close" type="button" aria-label="Close" title="Close">
+          <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 2 8 8m0-8-8 8"/></svg>
+        </button>
+      </div>
+    </header>
+    <main class="app-content">
+      <div id="fleep-container"></div>
+    </main>
+    <script src="titlebar.js"></script>
+  </body>
+</html>

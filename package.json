@@ -1,0 +1,54 @@
+{
+  "name": "fleep-desktop",
+  "version": "1.0.0",
+  "description": "A desktop app for Fleep",
+  "main": "src/main.js",
+  "author": "Fleep Desktop",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^44.9.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "space.fleep.desktop",
+    "productName": "Fleep",
+    "protocols": [
+      {
+        "name": "Fleep",
+        "schemes": [
+          "fleep"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Network;InstantMessaging;"
+    }
+  }
+}
