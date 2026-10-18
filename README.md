@@ -38,6 +38,12 @@ tab using **Run workflow**. The workflow builds separate Intel (`x64`) and
 Apple Silicon (`arm64`) DMGs and uploads each as a workflow artifact. These
 builds are unsigned and are not notarized.
 
+The workflow also creates an Intel (`x64`) DMG for macOS 10.15 Catalina using
+Electron 32.3.3. Electron 33 and later no longer support Catalina, so this
+legacy build uses an unsupported Electron release and does not receive
+Electron security updates. Use it only when Catalina compatibility is
+required; the standard DMGs use the current Electron version.
+
 ## Deep links and window controls
 
 The main process registers the `fleep://` protocol and sends validated links to
