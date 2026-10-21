@@ -41,13 +41,13 @@ is documented in [updater/README.md](./updater/README.md); server code is not
 included in this repository. macOS builds also produce a ZIP for in-app
 updates.
 
-To build Linux and macOS packages on GitHub, push to `master` or run **Build
-Linux and macOS releases** from the repository's Actions tab using **Run
-workflow**. The workflow builds a Linux (`x64`) AppImage and separate Intel
-(`x64`) and Apple Silicon (`arm64`) macOS DMGs and update ZIPs. It uploads each
-platform build and its updater metadata as a downloadable workflow artifact.
-These macOS builds are unsigned and are not notarized. The Catalina legacy
-build has been removed.
+To build Windows, Linux, and macOS packages on GitHub, push to `master` or run
+**Build desktop releases** from the repository's Actions tab using **Run
+workflow**. The workflow builds a Windows (`x64`) NSIS installer, a Linux
+(`x64`) AppImage, and separate Intel (`x64`) and Apple Silicon (`arm64`) macOS
+DMGs and update ZIPs. It uploads each platform build and its updater metadata
+as a downloadable workflow artifact. The macOS builds are unsigned and not
+notarized. The Catalina legacy build has been removed.
 
 ## Deep links and window controls
 
