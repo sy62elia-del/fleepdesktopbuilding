@@ -8,8 +8,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder",
-    "updater:serve": "node updater/server.js"
+    "dist": "electron-builder"
   },
   "devDependencies": {
     "electron": "^44.9.0",

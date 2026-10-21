@@ -35,10 +35,11 @@ npm run dist
 The installer or package is written to `dist/`. Builds target Windows (NSIS), macOS (DMG), and Linux (AppImage); build each platform on its supported host.
 
 Packaged apps check for updates at launch and download available updates
-automatically. The update server implementation and deployment instructions
-are in [updater/README.md](./updater/README.md). Release metadata and packages
-must be published to `https://updates.fleep.space/` over HTTPS. macOS builds
-also produce a ZIP for in-app updates.
+automatically. Release metadata and packages must be published to
+`https://updates.fleep.space/` over HTTPS. The external update-hosting format
+is documented in [updater/README.md](./updater/README.md); server code is not
+included in this repository. macOS builds also produce a ZIP for in-app
+updates.
 
 To build Linux and macOS packages on GitHub, push to `master` or run **Build
 Linux and macOS releases** from the repository's Actions tab using **Run
