@@ -10,6 +10,7 @@ const {
   shell,
   Tray
 } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
@@ -37,6 +38,7 @@ const parseDeepLink = (value) => {
 };
 
 let mainWindow;
+let loadingWindow;
 let fleepContents;
 let tray;
 let quitting = false;
@@ -64,10 +66,12 @@ if (!gotSingleInstanceLock) {
 
   app.whenReady().then(() => {
     configurePermissions();
+    createLoadingWindow();
     createWindow();
     createTray();
     createApplicationMenu();
     registerWindowControlIpc();
+    checkForUpdates();
 
     const initialDeepLink = process.argv.map(parseDeepLink).find(Boolean);
     if (initialDeepLink) handleDeepLink(initialDeepLink);
@@ -79,6 +83,51 @@ if (!gotSingleInstanceLock) {
 
   app.on('before-quit', () => {
     quitting = true;
+  });
+}
+
+function createLoadingWindow() {
+  loadingWindow = new BrowserWindow({
+    width: 640,
+    height: 360,
+    show: false,
+    frame: false,
+    resizable: false,
+    backgroundColor: '#000000',
+    skipTaskbar: true,
+    autoHideMenuBar: true,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  });
+
+  loadingWindow.once('ready-to-show', () => {
+    if (loadingWindow && !loadingWindow.isDestroyed()) loadingWindow.show();
+  });
+  loadingWindow.on('closed', () => {
+    loadingWindow = null;
+  });
+  loadingWindow.loadFile(path.join(__dirname, 'loading.html'));
+}
+
+function closeLoadingWindow() {
+  if (!loadingWindow || loadingWindow.isDestroyed()) return;
+  loadingWindow.close();
+  loadingWindow = null;
+}
+
+function checkForUpdates() {
+  if (!app.isPackaged) return;
+
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.on('error', (error) => {
+    console.error('Unable to check for or download Fleep updates:', error);
+  });
+  autoUpdater.checkForUpdates().catch((error) => {
+    console.error('Unable to start the Fleep update check:', error);
   });
 }
 
@@ -280,7 +329,10 @@ function createWindow() {
 
   fleepReady = false;
 
-  mainWindow.once('ready-to-show', () => mainWindow.show());
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+    closeLoadingWindow();
+  });
   mainWindow.webContents.on('did-finish-load', () => {
     sendWindowState();
   });

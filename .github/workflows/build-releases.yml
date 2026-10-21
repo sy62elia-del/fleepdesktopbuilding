@@ -1,4 +1,4 @@
-name: Build macOS DMGs
+name: Build Linux and macOS releases
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build ${{ matrix.arch }} DMG
+  build-macos:
+    name: Build macOS ${{ matrix.arch }}
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -32,21 +32,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build DMG
+      - name: Build macOS packages
         run: npm run dist -- --mac --${{ matrix.arch }} --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
-      - name: Upload DMG
+      - name: Upload macOS packages
         uses: actions/upload-artifact@v4
         with:
           name: fleep-macos-${{ matrix.arch }}
-          path: dist/*.dmg
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/latest-mac.yml
+            dist/*.blockmap
           if-no-files-found: error
 
-  build-catalina:
-    name: Build Catalina DMG (legacy Electron)
-    runs-on: macos-latest
+  build-linux:
+    name: Build Linux AppImage
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -57,25 +61,23 @@ jobs:
           node-version: 24
           cache: npm
 
+      - name: Install AppImage build dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libfuse2
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Catalina-compatible Electron
-        run: |
-          npm pkg set devDependencies.electron=32.3.3
-          npm install --package-lock=false
+      - name: Build Linux AppImage
+        run: npm run dist -- --linux --x64 --publish never
 
-      - name: Set Catalina minimum system version
-        run: npm pkg set build.mac.minimumSystemVersion=10.15.0
-
-      - name: Build Catalina DMG
-        run: npm run dist -- --mac --x64 --publish never
-        env:
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-
-      - name: Upload Catalina DMG
+      - name: Upload Linux packages
         uses: actions/upload-artifact@v4
         with:
-          name: fleep-macos-catalina-x64
-          path: dist/*.dmg
+          name: fleep-linux-x64
+          path: |
+            dist/*.AppImage
+            dist/latest-linux.yml
+            dist/*.blockmap
           if-no-files-found: error

@@ -11,6 +11,8 @@ An Electron desktop wrapper for [Fleep](https://fleep.space/). It uses Fleep's e
 - Optional launch at login setting in the application menu
 - External web links open in the system browser
 - Single-instance behavior
+- Branded startup splash that closes when the main window is ready
+- Automatic packaged-app updates from `https://updates.fleep.space/`
 - `fleep://` deep links with Windows/Linux cold starts and macOS URL events
 - Renderer IPC bridge for native window controls
 - Screen/window sharing through Electron's native display-capture picker
@@ -32,17 +34,19 @@ npm run dist
 
 The installer or package is written to `dist/`. Builds target Windows (NSIS), macOS (DMG), and Linux (AppImage); build each platform on its supported host.
 
-To build macOS DMGs on GitHub, push the project to a GitHub repository with
-Actions enabled, then run **Build macOS DMGs** from the repository's Actions
-tab using **Run workflow**. The workflow builds separate Intel (`x64`) and
-Apple Silicon (`arm64`) DMGs and uploads each as a workflow artifact. These
-builds are unsigned and are not notarized.
+Packaged apps check for updates at launch and download available updates
+automatically. The update server implementation and deployment instructions
+are in [updater/README.md](./updater/README.md). Release metadata and packages
+must be published to `https://updates.fleep.space/` over HTTPS. macOS builds
+also produce a ZIP for in-app updates.
 
-The workflow also creates an Intel (`x64`) DMG for macOS 10.15 Catalina using
-Electron 32.3.3. Electron 33 and later no longer support Catalina, so this
-legacy build uses an unsupported Electron release and does not receive
-Electron security updates. Use it only when Catalina compatibility is
-required; the standard DMGs use the current Electron version.
+To build Linux and macOS packages on GitHub, push to `master` or run **Build
+Linux and macOS releases** from the repository's Actions tab using **Run
+workflow**. The workflow builds a Linux (`x64`) AppImage and separate Intel
+(`x64`) and Apple Silicon (`arm64`) macOS DMGs and update ZIPs. It uploads each
+platform build and its updater metadata as a downloadable workflow artifact.
+These macOS builds are unsigned and are not notarized. The Catalina legacy
+build has been removed.
 
 ## Deep links and window controls
 

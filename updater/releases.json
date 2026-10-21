@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "url": "https://updates.fleep.space/Fleep%20Setup%201.0.0.exe",
+  "url-win": "https://updates.fleep.space/Fleep%20Setup%201.0.0.exe",
+  "url-mac": "https://updates.fleep.space/Fleep-1.0.0-mac.zip",
+  "url-lin": "https://updates.fleep.space/Fleep-1.0.0.AppImage",
+  "url-bcm": "https://updates.fleep.space/Fleep%20Setup%201.0.0.exe.blockmap"
+}
