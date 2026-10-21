@@ -38,7 +38,7 @@
     ],
     "publish": {
       "provider": "generic",
-      "url": "https://updates.fleep.space/"
+      "url": "https://versions.fleep.space/"
     },
     "win": {
       "icon": "assets/icon.ico",

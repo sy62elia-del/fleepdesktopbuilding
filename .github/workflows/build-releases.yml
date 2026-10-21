@@ -110,3 +110,57 @@ jobs:
             dist/latest-linux.yml
             dist/*.blockmap
           if-no-files-found: error
+
+  publish-r2:
+    name: Publish releases to Cloudflare R2
+    needs:
+      - build-windows
+      - build-macos
+      - build-linux
+    if: ${{ vars.R2_UPLOAD_ENABLED == 'true' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Download platform build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Verify AWS CLI
+        run: aws --version
+
+      - name: Publish release files and manifest to R2
+        run: node .github/scripts/publish-r2.js
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: flp-updates
+          R2_PUBLIC_URL: https://versions.fleep.space
+
+  explain-r2-not-configured:
+    name: Explain R2 publishing setup
+    needs:
+      - build-windows
+      - build-macos
+      - build-linux
+    if: ${{ vars.R2_UPLOAD_ENABLED != 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain required repository settings
+        run: |
+          {
+            echo "## Cloudflare R2 publishing not enabled"
+            echo
+            echo "Build artifacts are available above, but automatic R2 publishing is disabled."
+            echo "Add the repository secrets R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY."
+            echo "Then add the repository Actions variable R2_UPLOAD_ENABLED=true."
+          } >> "$GITHUB_STEP_SUMMARY"

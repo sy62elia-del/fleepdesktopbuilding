@@ -12,7 +12,7 @@ An Electron desktop wrapper for [Fleep](https://fleep.space/). It uses Fleep's e
 - External web links open in the system browser
 - Single-instance behavior
 - Branded startup splash that closes when the main window is ready
-- Automatic packaged-app updates from `https://updates.fleep.space/`
+- Automatic packaged-app updates from `https://versions.fleep.space/`
 - `fleep://` deep links with Windows/Linux cold starts and macOS URL events
 - Renderer IPC bridge for native window controls
 - Screen/window sharing through Electron's native display-capture picker
@@ -36,7 +36,7 @@ The installer or package is written to `dist/`. Builds target Windows (NSIS), ma
 
 Packaged apps check for updates at launch and download available updates
 automatically. Release metadata and packages must be published to
-`https://updates.fleep.space/` over HTTPS. The external update-hosting format
+`https://versions.fleep.space/` over HTTPS. The external update-hosting format
 is documented in [updater/README.md](./updater/README.md); server code is not
 included in this repository. macOS builds also produce a ZIP for in-app
 updates.
@@ -48,6 +48,11 @@ workflow**. The workflow builds a Windows (`x64`) NSIS installer, a Linux
 DMGs and update ZIPs. It uploads each platform build and its updater metadata
 as a downloadable workflow artifact. The macOS builds are unsigned and not
 notarized. The Catalina legacy build has been removed.
+
+After all four builds succeed, the workflow can publish the packages and
+release manifest to Cloudflare R2. Configure the required GitHub Actions
+secrets and enable the repository variable as described in
+[updater/README.md](./updater/README.md).
 
 ## Deep links and window controls
 

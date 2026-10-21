@@ -17,6 +17,7 @@ const { pathToFileURL } = require('node:url');
 const FLEEP_URL = 'https://fleep.space/app';
 const FLEEP_HOST = 'fleep.space';
 const DEEP_LINK_SCHEME = 'fleep:';
+const UPDATE_FEED_BASE_URL = 'https://versions.fleep.space';
 const isFleepUrl = (value) => {
   try {
     const url = new URL(value);
@@ -121,8 +122,25 @@ function closeLoadingWindow() {
 function checkForUpdates() {
   if (!app.isPackaged) return;
 
+  const feedDirectories = {
+    win32: { x64: 'windows-x64' },
+    darwin: { x64: 'mac-x64', arm64: 'mac-arm64' },
+    linux: { x64: 'linux-x64' }
+  };
+  const feedDirectory = feedDirectories[process.platform]?.[process.arch];
+  if (!feedDirectory) {
+    console.error(
+      `Automatic updates are not configured for ${process.platform}/${process.arch}`
+    );
+    return;
+  }
+
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.setFeedURL({
+    provider: 'generic',
+    url: `${UPDATE_FEED_BASE_URL}/${feedDirectory}/`
+  });
   autoUpdater.on('error', (error) => {
     console.error('Unable to check for or download Fleep updates:', error);
   });
